@@ -1,4 +1,4 @@
-package cn.hssnow.dler.articlecore;
+package cn.hssnow.dler.articlecore.util;
 
 import java.text.DecimalFormat;
 import java.util.concurrent.*;
@@ -6,7 +6,6 @@ import java.util.concurrent.*;
 /**
  * @author hyia
  */
-// TODO: 2018/3/17 TEST
 public class CliTimer {
 	private static ExecutorService singleThreadPool = Executors.newSingleThreadExecutor();
     private static Future<Double> result;
@@ -19,7 +18,7 @@ public class CliTimer {
     
     private long delay;
     
-    private CliTimer(String staticText, String endText, long delay, int decimal) {
+    public CliTimer(String staticText, String endText, long delay, int decimal) {
         this.staticText = staticText;
         this.endText = endText;
         this.delay = delay;
@@ -34,7 +33,6 @@ public class CliTimer {
     public void start() {
 		result = singleThreadPool.submit(() -> {
 			long start = System.currentTimeMillis();
-			long end;
 
 			double t = 0.0;
 			endFlag = false;
