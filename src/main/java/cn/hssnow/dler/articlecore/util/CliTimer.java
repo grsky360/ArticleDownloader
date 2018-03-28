@@ -3,9 +3,6 @@ package cn.hssnow.dler.articlecore.util;
 import java.text.DecimalFormat;
 import java.util.concurrent.*;
 
-/**
- * @author hyia
- */
 public class CliTimer {
 	private static ExecutorService singleThreadPool = Executors.newSingleThreadExecutor();
     private static Future<Double> result;

@@ -1,7 +1,6 @@
 package cn.hssnow.dler.articlecore;
 
 import org.junit.Test;
-import org.springframework.web.util.HtmlUtils;
 
 public class CliTimerTest {
 

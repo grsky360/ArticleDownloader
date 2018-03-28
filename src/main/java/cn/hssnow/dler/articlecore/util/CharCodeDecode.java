@@ -9,8 +9,10 @@ import java.util.Set;
  */
 public class CharCodeDecode {
 
-	public static final Map<String, String> CHAR_CODES= new HashMap<>() {
-		{
+	private static final Map<String, String> CHAR_CODES= new HashMap<String, String>() {
+        private static final long serialVersionUID = 5476400268703720423L;
+
+        {
 			put("&#x273F", "✿");
 			put("&#x203F", "‿");
 			put("&#x25E1", "◡");
@@ -28,15 +30,10 @@ public class CharCodeDecode {
 		}
 	};
 
-	public static void put(String k, String v) {
-		CHAR_CODES.put(k, v);
-	}
-
-	public static Set<String> getEncodeChars() {
-		return CHAR_CODES.keySet();
-	}
-
-	public static String replace(String source, String rep) {
-		return source.replaceAll(rep, CHAR_CODES.get(rep));
+	public static String replace(String source) {
+	    for (Map.Entry<String, String> entry : CHAR_CODES.entrySet()) {
+	        source = source.replaceAll(entry.getKey(), entry.getValue());
+        }
+        return source;
 	}
 }
