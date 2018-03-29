@@ -1,9 +1,19 @@
 package cn.hssnow.dler.articlecore.host;
 
 import cn.hssnow.dler.articlecore.host.support.Host;
+import cn.hssnow.dler.articlecore.util.CliTimer;
+import cn.hssnow.dler.articlecore.util.HttpRequest;
+import com.alibaba.fastjson.JSON;
 import lombok.Data;
 import okhttp3.OkHttpClient;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 public abstract class BaseService {
@@ -13,18 +23,40 @@ public abstract class BaseService {
     
     private String url;
     private String title;
-    private int page;
+    private int page = 0;
     
-    private List<String> urls;
-    private List<String> imgs;
+    private List<String> imgs = new ArrayList<>();
 
-    OkHttpClient client;
+    OkHttpClient client = new OkHttpClient.Builder().build();
+    
+    private String getSavePath(String ext) {
+    	if (ext.charAt(0) != '.') {
+    		ext = "." + ext;
+		}
+    	if (path.charAt(path.length() - 1) == File.separatorChar) {
+    		return path + filename + ext;
+		}
+		return path + File.separator + filename + ext;
+	}
     
     private String getPageSeparate() {
     	return this.getClass().getAnnotation(Host.class).page();
 	}
     
-    void build(String url) {
+	private String getPageUrl(int page) {
+    	int index = url.indexOf('?');
+    	if (index == -1) {
+    		return url + "?" + getPageSeparate() + "=" + page;
+		}
+		if (index == url.length() - 1) {
+    		return url + getPageSeparate() + "=" + page;
+		}
+		return url + "&" + getPageSeparate() + "=" + page;
+	}
+	
+    void build(String path, String filename, String url) {
+    	this.path = path;
+    	this.filename = filename;
     	this.url = url;
     	
     	handleUrl();
@@ -33,7 +65,6 @@ public abstract class BaseService {
     private void handleUrl() {
     	if (url.indexOf('?') != -1) {
     		StringBuilder sb = new StringBuilder(url.substring(0, url.indexOf('?') + 1));
-			System.out.println(sb.toString());
 			String[] params = url.substring(url.indexOf('?') + 1).split("&");
 			for (String param : params) {
 				if (!param.split("=")[0].equals(getPageSeparate())) {
@@ -44,28 +75,75 @@ public abstract class BaseService {
 				sb.deleteCharAt(sb.length() - 1);
 			}
 			url = sb.toString();
-		} else {
-    		url += '?';
 		}
-		
 	}
 
-	protected abstract void handlePageAndTitle();
-	
-    private void open() {
-    	// get page 1
-		handlePageAndTitle();
-		for (int i = 1; i < page; i++) {
-			urls.add(url + '&' + getPageSeparate() + i);
+	protected abstract void handlePageAndTitle(String firstPageContent);
+	protected abstract String handleContent(String content);
+    
+    private boolean open() {
+		String content = getContent(1);
+		handlePageAndTitle(content);
+
+		content = handleContent(content);
+		
+		File file = new File(getSavePath("tmp"));
+		if (file.exists() && !file.delete()) return false;
+		
+		if (!save(file, content)) return false;
+		
+		for (int page = 2; page <= this.page; page++) {
+			content = handleContent(getContent(page));
+			
+			save(file, content);
 		}
+		
+		return true;
 	}
     
-    
-    
-	public static void main(String[] args) {
-    	final String demo1 = "https://bbs.yamibo.com/forum.php?mod=viewthread&tid=211304&page=2&authorid=224668";
-    	final String demo2 = "https://tieba.baidu.com/p/4402297316?see_lz=1";
+	private String getContent(int page) {
+    	String info = url + "\tPage: " + page + "/" + (this.page == 0 ? "?" : this.page);
+		CliTimer timer = new CliTimer(info, "OK", 10, 2);
+
+		Map<String, String> header = new HashMap<>();
+		header.put("User-Agent", "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.04");
+		header.put("Content-Type", "text/html;charset=UTF-8");
 		
+		timer.start();
+		
+		String content = null;
+		
+		try {
+			content = HttpRequest.get(getPageUrl(page), header);
+			timer.stop();
+		} catch (IOException e) {
+			timer.error();
+		}
+		
+		return content == null ? "" : content;
+	}
+	
+	private boolean save(File file, String content) {
+		try {
+			RandomAccessFile random = new RandomAccessFile(file, "rw");
+			random.seek(random.length());
+			random.write(content.getBytes());
+			random.close();
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
+	}
+	
+	public static void main(String[] args) {
+		final String demo1 = "https://tieba.baidu.com/p/3017773668?see_lz=1";
+		
+		final String demo2 = "https://bbs.yamibo.com/forum.php?mod=viewthread&tid=182132&page=1&authorid=11241";
+		
+    	ServiceFactory<BaseService> factory = new ServiceFactoryImpl();
+    	
+    	BaseService service = factory.judge("./", "a", demo2);
+    	
 	}
 	
 }

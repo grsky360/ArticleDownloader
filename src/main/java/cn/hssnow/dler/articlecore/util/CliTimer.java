@@ -4,7 +4,7 @@ import java.text.DecimalFormat;
 import java.util.concurrent.*;
 
 public class CliTimer {
-	private static ExecutorService singleThreadPool = Executors.newSingleThreadExecutor();
+	private static ExecutorService singleThreadPool = Executors.newCachedThreadPool();
     private static Future<Double> result;
 
     private String staticText;
@@ -46,7 +46,7 @@ public class CliTimer {
 			}
 
 			if (endFlag) {
-				System.out.println("\t" + endText + "\n");
+				System.out.println("\t" + endText);
 			} else if (isError) {
 				System.out.println("\tError!");
 			}
@@ -60,9 +60,7 @@ public class CliTimer {
     	try {
     		return result.get();
 		} catch (InterruptedException | ExecutionException e) {
-    		return 0;
-		} finally {
-    		singleThreadPool.shutdown();
+			return 0;
 		}
 	}
 
@@ -72,8 +70,6 @@ public class CliTimer {
 			return result.get();
 		} catch (InterruptedException | ExecutionException e) {
 			return 0;
-		} finally {
-			singleThreadPool.shutdown();
 		}
 	}
 }

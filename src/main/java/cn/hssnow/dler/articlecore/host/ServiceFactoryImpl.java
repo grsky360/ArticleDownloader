@@ -29,10 +29,10 @@ public class ServiceFactoryImpl implements ServiceFactory<BaseService> {
 	}
 	
 	@Override
-	public BaseService judge(String url) {
+	public BaseService judge(String path, String filename, String url) {
 		BaseService service = newInstance(url);
 		
-		service.build(url);
+		service.build(path, filename, url);
 		
 		return service;
 	}
