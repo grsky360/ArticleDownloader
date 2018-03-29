@@ -9,6 +9,7 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.internal.http2.Header;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,19 +39,17 @@ public class HttpRequest {
 						List<Cookie> cookies = cookieStore.get(httpUrl.host());
 						return cookies != null ? cookies : new ArrayList<>();
 					}
-
-					@Override
-					public String toString() {
-						return JSON.toJSONString(cookieStore);
-					}
 				})
 				.build();
+	}
+	
+	private static OkHttpClient client() {
+		return Client.CLIENT;
 	}
 	
 	public static String execute(String url, Map<String, String> header, Map<String, String> data, HttpMethod method) throws IOException {
 		Request.Builder requestBuilder = new Request.Builder();
 		header.forEach(requestBuilder::addHeader);
-		
 		switch (method) {
 			case GET:
 				StringBuilder sb = new StringBuilder();
@@ -68,13 +67,20 @@ public class HttpRequest {
 			default:
 				return null;
 		}
+		
+		List<Cookie> cookies = client().cookieJar().loadForRequest(HttpUrl.parse(url));
+		StringBuilder sb = new StringBuilder();
+		for(Cookie cookie : cookies){
+			sb.append(cookie.name()).append("=").append(cookie.value()).append(";");
+		}
+		requestBuilder.addHeader("Cookie", sb.toString());
+		// System.out.println(sb.toString());
+		
 		Request request = requestBuilder.build();
-		Response response = Client.CLIENT.newCall(request).execute();
+		System.out.println(request.headers("Cookie"));
+		Response response = client().newCall(request).execute();
 		
 		if (response.isSuccessful()) {
-			
-			System.out.println(JSON.toJSONString(response.headers()));
-			System.out.println(JSON.toJSONString(Cookie.parseAll(request.url(), response.headers())));
 			if (response.body() != null) {
 				return response.body().string();
 			}
@@ -100,12 +106,10 @@ public class HttpRequest {
 
 	public static void main(String[] args) throws IOException {
 		YamiboService service = new YamiboService();
-		
-		service.login();
 
-		// System.out.println(get("https://bbs.yamibo.com/forum.php?mod=viewthread&tid=182132&page=1&authorid=11241"));
+		//todo: test cookie
+		System.out.println(get("https://bbs.yamibo.com/forum.php?mod=viewthread&tid=182132&page=1&authorid=11241"));
 		
-		System.out.println(JSON.toJSONString(Client.CLIENT.cookieJar().toString()));
 	}
 	
 }

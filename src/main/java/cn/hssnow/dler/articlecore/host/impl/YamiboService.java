@@ -14,11 +14,11 @@ public class YamiboService extends BaseService {
 	private static final String USERNAME = "parse";
 	private static final String PASSWORD = "parse1231";
 	private static final String HOST = "http://bbs.yamibo.com";
-	private static final String LOGIN_URI = "/member.php?mod=logging&action=login&loginsubmit=yes&handlekey=login&loginhash=LhmL6&inajax=1";
+	private static final String LOGIN_URI = "/member.php?mod=logging&action=login&loginsubmit=yes&handlekey=login&loginhash=LUy46&inajax=1";
 	private static final String REFERER = "/forum.php";
 	
 	public YamiboService() {
-		System.out.println(login());
+		login();
 	}
 	
 	public boolean login() {
