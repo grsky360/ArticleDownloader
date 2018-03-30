@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN"
+ "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1">
+  <head>
+    <meta content="urn:uuid:63adf839-bed4-41a5-9b05-76f5defd5688" name="dtb:uid"/>
+    <meta content="1" name="dtb:depth"/>
+    <meta content="0" name="dtb:totalPageCount"/>
+    <meta content="0" name="dtb:maxPageNumber"/>
+  </head>
+  <docTitle>
+    <text>DATE．A．LIVE约会大作战 Fragment Date．A．Bullet 02</text>
+  </docTitle>
+  <navMap>
+    <navPoint id="navPoint-1" playOrder="1">
+      <navLabel>
+        <text>封面</text>
+      </navLabel>
+      <content src="Text/cover.xhtml"/>
+    </navPoint>
+    <navPoint id="navPoint-2" playOrder="2">
+      <navLabel>
+        <text>制作信息</text>
+      </navLabel>
+      <content src="Text/message.xhtml"/>
+    </navPoint>
+    <navPoint id="navPoint-3" playOrder="3">
+      <navLabel>
+        <text>简介</text>
+      </navLabel>
+      <content src="Text/Summary.xhtml"/>
+    </navPoint>
+    <navPoint id="navPoint-4" playOrder="4">
+      <navLabel>
+        <text>彩页</text>
+      </navLabel>
+      <content src="Text/Illus1.xhtml"/>
+    </navPoint>
+    <navPoint id="navPoint-5" playOrder="5">
+      <navLabel>
+        <text>目录</text>
+      </navLabel>
+      <content src="Text/contents.xhtml"/>
+    </navPoint>
+    <navPoint id="navPoint-6" playOrder="6">
+      <navLabel>
+        <text>Date•A•Bullet</text>
+      </navLabel>
+      <content src="Text/intro1.xhtml"/>
+    </navPoint>
+    <navPoint id="navPoint-7" playOrder="7">
+      <navLabel>
+        <text>○序章</text>
+      </navLabel>
+      <content src="Text/Section000.xhtml"/>
+    </navPoint>
+    <navPoint id="navPoint-8" playOrder="8">
+      <navLabel>
+        <text>○第九领域</text>
+      </navLabel>
+      <content src="Text/Section001.xhtml"/>
+    </navPoint>
+    <navPoint id="navPoint-9" playOrder="9">
+      <navLabel>
+        <text>○绊王院瑞叶</text>
+      </navLabel>
+      <content src="Text/Section002.xhtml"/>
+    </navPoint>
+    <navPoint id="navPoint-10" playOrder="10">
+      <navLabel>
+        <text>○辉俐莉音梦</text>
+      </navLabel>
+      <content src="Text/Section003.xhtml"/>
+    </navPoint>
+    <navPoint id="navPoint-11" playOrder="11">
+      <navLabel>
+        <text>○梦之摇篮</text>
+      </navLabel>
+      <content src="Text/Section004.xhtml"/>
+    </navPoint>
+    <navPoint id="navPoint-12" playOrder="12">
+      <navLabel>
+        <text>○三人组</text>
+      </navLabel>
+      <content src="Text/Section005.xhtml"/>
+    </navPoint>
+    <navPoint id="navPoint-13" playOrder="13">
+      <navLabel>
+        <text>○Sing A Song！</text>
+      </navLabel>
+      <content src="Text/Section006.xhtml"/>
+    </navPoint>
+    <navPoint id="navPoint-14" playOrder="14">
+      <navLabel>
+        <text>○琉玖</text>
+      </navLabel>
+      <content src="Text/Section007.xhtml"/>
+    </navPoint>
+    <navPoint id="navPoint-15" playOrder="15">
+      <navLabel>
+        <text>○接下来，白之女王登场</text>
+      </navLabel>
+      <content src="Text/Section008.xhtml"/>
+    </navPoint>
+    <navPoint id="navPoint-16" playOrder="16">
+      <navLabel>
+        <text>○迈向前行之路</text>
+      </navLabel>
+      <content src="Text/Section009.xhtml"/>
+    </navPoint>
+    <navPoint id="navPoint-17" playOrder="17">
+      <navLabel>
+        <text>后记</text>
+      </navLabel>
+      <content src="Text/Section010.xhtml"/>
+    </navPoint>
+  </navMap>
+</ncx>

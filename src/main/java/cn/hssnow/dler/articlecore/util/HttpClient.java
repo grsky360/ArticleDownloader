@@ -48,7 +48,6 @@ public class HttpClient {
 	public static String execute(String url, Map<String, String> header, Map<String, String> data, HttpMethod method) throws IOException {
 		Request.Builder requestBuilder = new Request.Builder();
 		
-		
 		StringBuilder cookieStr = new StringBuilder();
 		cookies(HttpUrl.parse(url)).forEach(cookie -> cookieStr.append(cookie.name()).append("=").append(cookie.value()).append(";"));
 
@@ -78,7 +77,11 @@ public class HttpClient {
 		
 		if (response.isSuccessful()) {
 			if (response.body() != null) {
-				COOKIE_STORE.put(request.url().host(), Cookie.parseAll(request.url(), response.headers()));
+				List<Cookie> cookies = cookies(request.url());
+				if (cookies == null || cookies.isEmpty()) {
+					cookies = Cookie.parseAll(request.url(), response.headers());
+					COOKIE_STORE.put(request.url().host(), cookies);
+				}
 				
 				return response.body().string();
 			}

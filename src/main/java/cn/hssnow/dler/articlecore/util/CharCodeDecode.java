@@ -23,7 +23,6 @@ public class CharCodeDecode {
 			put("&lt;", "<");
 			put("&gt;", ">");
 
-			put("<(br|BR).*?>", "\r\n");
 			put("<[^>]+>", "");
 			put("[ ]{4}", "");
 			put("[ ]{2}", " ");

@@ -17,11 +17,15 @@ public class App implements CommandLineRunner {
     
     @Override
     public void run(String... args) throws IOException {
+    	final String demo1 = "https://tieba.baidu.com/p/4649121637?see_lz=1";
 		final String demo2 = "https://bbs.yamibo.com/forum.php?mod=viewthread&tid=182132&page=1&authorid=11241";
 
-		BaseService service = new ServiceFactoryImpl().judge("./", "a", demo2);
-		
-		
+		BaseService service = new ServiceFactoryImpl().judge(
+				"./",
+				"a",
+				demo2);
+
+		System.out.println(service.open());
     }
     
 }

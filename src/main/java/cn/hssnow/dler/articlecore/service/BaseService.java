@@ -80,7 +80,7 @@ public abstract class BaseService {
 	protected abstract void handlePageAndTitle(String content);
 	protected abstract String handleContent(String content);
     
-    private boolean open() {
+    public boolean open() {
 		String content = getContent(1);
 		handlePageAndTitle(content);
 
@@ -94,13 +94,16 @@ public abstract class BaseService {
 		for (int page = 2; page <= this.page; page++) {
 			content = handleContent(getContent(page));
 			
-			save(file, content);
+			if (!save(file, content)) {
+				return false;
+			}
 		}
 		
 		return true;
 	}
     
 	private String getContent(int page) {
+    	String url = getPageUrl(page);
     	String info = url + "\tPage: " + page + "/" + (this.page == 0 ? "?" : this.page);
 		CliTimer timer = new CliTimer(info, "OK", 10, 2);
 
@@ -113,7 +116,7 @@ public abstract class BaseService {
 		String content = null;
 		
 		try {
-			content = HttpClient.get(getPageUrl(page), header);
+			content = HttpClient.get(url, header);
 			timer.stop();
 		} catch (IOException e) {
 			timer.error();
@@ -122,7 +125,7 @@ public abstract class BaseService {
 		return content == null ? "" : content;
 	}
 	
-	private boolean save(File file, String content) {
+	private synchronized boolean save(File file, String content) {
 		try {
 			RandomAccessFile random = new RandomAccessFile(file, "rw");
 			random.seek(random.length());
