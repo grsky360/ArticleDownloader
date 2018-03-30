@@ -1,6 +1,8 @@
-package cn.hssnow.dler.articlecore.host;
+package cn.hssnow.dler.articlecore.factory.impl;
 
-import cn.hssnow.dler.articlecore.host.support.Host;
+import cn.hssnow.dler.articlecore.factory.ServiceFactory;
+import cn.hssnow.dler.articlecore.service.BaseService;
+import cn.hssnow.dler.articlecore.service.support.Host;
 import org.reflections.Reflections;
 
 import java.util.ArrayList;
@@ -10,7 +12,7 @@ public class ServiceFactoryImpl implements ServiceFactory<BaseService> {
 	private static final List<Class<? extends BaseService>> SERVICES = new ArrayList<>();
 
 	static {
-		Reflections reflections = new Reflections("cn.hssnow.dler.articlecore.host.impl");
+		Reflections reflections = new Reflections("cn.hssnow.dler.articlecore.service.impl");
 		SERVICES.addAll(reflections.getSubTypesOf(BaseService.class));
 	}
 	

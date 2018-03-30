@@ -1,7 +1,7 @@
-package cn.hssnow.dler.articlecore.host.impl;
+package cn.hssnow.dler.articlecore.service.impl;
 
-import cn.hssnow.dler.articlecore.host.BaseService;
-import cn.hssnow.dler.articlecore.host.support.Host;
+import cn.hssnow.dler.articlecore.service.BaseService;
+import cn.hssnow.dler.articlecore.service.support.Host;
 import cn.hssnow.dler.articlecore.util.CharCodeDecode;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

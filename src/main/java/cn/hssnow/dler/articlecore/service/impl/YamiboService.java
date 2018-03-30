@@ -1,8 +1,8 @@
-package cn.hssnow.dler.articlecore.host.impl;
+package cn.hssnow.dler.articlecore.service.impl;
 
-import cn.hssnow.dler.articlecore.host.BaseService;
-import cn.hssnow.dler.articlecore.host.support.Host;
-import cn.hssnow.dler.articlecore.util.HttpRequest;
+import cn.hssnow.dler.articlecore.service.BaseService;
+import cn.hssnow.dler.articlecore.service.support.Host;
+import cn.hssnow.dler.articlecore.util.HttpClient;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,7 +30,7 @@ public class YamiboService extends BaseService {
 		data.put("questionid", "0");
 		data.put("answer", "");
 		try {
-			HttpRequest.post(HOST + LOGIN_URI, data);
+			HttpClient.post(HOST + LOGIN_URI, data);
 			return true;
 		} catch (IOException e) {
 			return false;
@@ -38,7 +38,7 @@ public class YamiboService extends BaseService {
 	}
 	
 	@Override
-	protected void handlePageAndTitle(String firstPageContent) {
+	protected void handlePageAndTitle(String content) {
 		
 	}
 

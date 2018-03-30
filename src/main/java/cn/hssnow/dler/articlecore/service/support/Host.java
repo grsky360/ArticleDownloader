@@ -1,4 +1,4 @@
-package cn.hssnow.dler.articlecore.host.support;
+package cn.hssnow.dler.articlecore.service.support;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,9 +1,8 @@
-package cn.hssnow.dler.articlecore.host;
+package cn.hssnow.dler.articlecore.service;
 
-import cn.hssnow.dler.articlecore.host.support.Host;
+import cn.hssnow.dler.articlecore.service.support.Host;
 import cn.hssnow.dler.articlecore.util.CliTimer;
-import cn.hssnow.dler.articlecore.util.HttpRequest;
-import com.alibaba.fastjson.JSON;
+import cn.hssnow.dler.articlecore.util.HttpClient;
 import lombok.Data;
 import okhttp3.OkHttpClient;
 
@@ -54,7 +53,7 @@ public abstract class BaseService {
 		return url + "&" + getPageSeparate() + "=" + page;
 	}
 	
-    void build(String path, String filename, String url) {
+    public void build(String path, String filename, String url) {
     	this.path = path;
     	this.filename = filename;
     	this.url = url;
@@ -78,7 +77,7 @@ public abstract class BaseService {
 		}
 	}
 
-	protected abstract void handlePageAndTitle(String firstPageContent);
+	protected abstract void handlePageAndTitle(String content);
 	protected abstract String handleContent(String content);
     
     private boolean open() {
@@ -114,7 +113,7 @@ public abstract class BaseService {
 		String content = null;
 		
 		try {
-			content = HttpRequest.get(getPageUrl(page), header);
+			content = HttpClient.get(getPageUrl(page), header);
 			timer.stop();
 		} catch (IOException e) {
 			timer.error();
@@ -133,17 +132,6 @@ public abstract class BaseService {
 		} catch (IOException e) {
 			return false;
 		}
-	}
-	
-	public static void main(String[] args) {
-		final String demo1 = "https://tieba.baidu.com/p/3017773668?see_lz=1";
-		
-		final String demo2 = "https://bbs.yamibo.com/forum.php?mod=viewthread&tid=182132&page=1&authorid=11241";
-		
-    	ServiceFactory<BaseService> factory = new ServiceFactoryImpl();
-    	
-    	BaseService service = factory.judge("./", "a", demo2);
-    	
 	}
 	
 }
