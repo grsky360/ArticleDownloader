@@ -1,0 +1,13 @@
+{
+	"path": "./",
+	"tasks": [
+		{
+			"name": "a",
+			"url": "https://tieba.baidu.com/p/4649121637?see_lz=1"
+		},
+		{
+			"name": "b",
+			"url": "https://bbs.yamibo.com/forum.php?mod=viewthread&tid=182132&page=1&authorid=11241"
+		}
+	]
+}

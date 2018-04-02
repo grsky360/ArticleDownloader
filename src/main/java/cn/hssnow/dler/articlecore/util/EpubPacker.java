@@ -14,12 +14,10 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.io.File;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class EpubPacker {
 	private static final Element HEAD = new Element("head")

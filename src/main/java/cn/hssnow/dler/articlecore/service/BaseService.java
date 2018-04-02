@@ -92,7 +92,7 @@ public abstract class BaseService {
 		String content = getContent(1);
 		handlePageAndTitle(content);
 
-		content = title + "\n" + getPageUrl(1) + "\n" + "Page " + page + " / " + this.page + handleContent(content);
+		content = title + "\n" + getPageUrl(1) + "\n" + "Page " + 1 + " / " + this.page + handleContent(content);
 		
 		File file = new File(getSavePath("tmp"));
 		if (file.exists() && !file.delete()) return false;
@@ -144,7 +144,7 @@ public abstract class BaseService {
 		}
 	}
 	
-	public boolean start() {
+	public boolean run() {
     	if (!init) return false;
     	
     	if (!open()) return false;
@@ -171,7 +171,7 @@ public abstract class BaseService {
 		
 		EpubPacker epubPacker = new EpubPacker(path, filename, title, tmp, imgs);
     	
-    	return epubPacker.pack();
+    	return epubPacker.pack() && tmp.delete();
 	}
 	
 }
