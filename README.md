@@ -1,4 +1,4 @@
 # Article Core
 ### Description
 - Download article from forum.
-- Now support: [Tieba](tieba.baidu.com), [Yamibo(Discuz!)](bbs.yamibo.com)
+- Now support: [Tieba](https://tieba.baidu.com), [Yamibo(Discuz!)](https://bbs.yamibo.com)
