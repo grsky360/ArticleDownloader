@@ -17,14 +17,14 @@ public class TiebaService extends BaseService {
 		
 		Element page = html.selectFirst("#thread_theme_5 > div:nth-child(1) > ul:nth-child(1) > li:nth-child(2) > span:nth-child(2)");
 		if (page != null) {
-			setPage(Integer.parseInt(page.text()));
+			this.page = Integer.parseInt(page.text());
 		} else {
-			setPage(1);
+			this.page = 1;
 		}
 		
 		Element title = html.selectFirst(".core_title_txt");
 		if (title != null) {
-			setTitle(title.text());
+			this.title = title.text();
 		}
 	}
 
@@ -40,7 +40,7 @@ public class TiebaService extends BaseService {
 		StringBuilder sb = new StringBuilder();
 		for (Element element : elements) {
 			for (Element img : element.select("img")) {
-				getImgs().add(img.attr("src"));
+				imgs.add(img.attr("src"));
 			}
 			sb.append(CharCodeDecode.replace(element.html()
 					.replaceAll("<img.*?src=[\"'](.*?)[\"'].*?>", "$1")

@@ -2,32 +2,38 @@ package cn.hssnow.dler.articlecore.service;
 
 import cn.hssnow.dler.articlecore.service.support.Host;
 import cn.hssnow.dler.articlecore.util.CliTimer;
+import cn.hssnow.dler.articlecore.util.EpubPacker;
 import cn.hssnow.dler.articlecore.util.HttpClient;
-import lombok.Data;
-import okhttp3.OkHttpClient;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-@Data
 public abstract class BaseService {
-    
+	private static final List<String> SKIP_IMGS = Arrays.asList("static/image/", "bababian.com", "/js/", ".gif", "editor/images/face");
+	
     private String path;
     private String filename;
     
     private String url;
-    private String title;
-    private int page = 0;
+    protected String title;
+    protected int page = 0;
     
-    private List<String> imgs = new ArrayList<>();
+    protected List<String> imgs = new ArrayList<>();
 
-    OkHttpClient client = new OkHttpClient.Builder().build();
-    
+    private boolean init = false;
+	
     private String getSavePath(String ext) {
     	if (ext.charAt(0) != '.') {
     		ext = "." + ext;
@@ -59,6 +65,8 @@ public abstract class BaseService {
     	this.url = url;
     	
     	handleUrl();
+    	
+    	init = true;
 	}
 	
     private void handleUrl() {
@@ -80,26 +88,25 @@ public abstract class BaseService {
 	protected abstract void handlePageAndTitle(String content);
 	protected abstract String handleContent(String content);
     
-    public boolean open() {
+    private boolean open() {
 		String content = getContent(1);
 		handlePageAndTitle(content);
 
-		content = handleContent(content);
+		content = title + "\n" + getPageUrl(1) + "\n" + "Page " + page + " / " + this.page + handleContent(content);
 		
 		File file = new File(getSavePath("tmp"));
 		if (file.exists() && !file.delete()) return false;
 		
-		if (!save(file, content)) return false;
-		
-		for (int page = 2; page <= this.page; page++) {
-			content = handleContent(getContent(page));
-			
-			if (!save(file, content)) {
-				return false;
+		if (save(file, content)) {
+			for (int page = 2; page <= this.page; page++) {
+				content = getPageUrl(page) + "\n" + "Page " + page + " / " + this.page + handleContent(getContent(page));
+				if (!save(file, content)) {
+					return false;
+				}
 			}
+			return true;
 		}
-		
-		return true;
+		return false;
 	}
     
 	private String getContent(int page) {
@@ -125,7 +132,7 @@ public abstract class BaseService {
 		return content == null ? "" : content;
 	}
 	
-	private synchronized boolean save(File file, String content) {
+	private boolean save(File file, String content) {
 		try {
 			RandomAccessFile random = new RandomAccessFile(file, "rw");
 			random.seek(random.length());
@@ -135,6 +142,36 @@ public abstract class BaseService {
 		} catch (IOException e) {
 			return false;
 		}
+	}
+	
+	public boolean start() {
+    	if (!init) return false;
+    	
+    	if (!open()) return false;
+    	
+    	File tmp = new File(getSavePath("tmp"));
+    	if (!tmp.exists()) return false;
+    	
+    	List<String> imgs = this.imgs.stream().filter(img -> !SKIP_IMGS.contains(img)).collect(Collectors.toList());
+    	
+    	if (imgs.isEmpty()) {
+			try {
+				List<String> lines = Files.readAllLines(tmp.toPath(), StandardCharsets.UTF_8);
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp), "UTF-8"));
+				for (String line : lines) {
+					writer.write(line.replaceAll("&lt;", "<").replaceAll("%gt;", ">"));
+				}
+				writer.flush();
+				writer.close();
+			} catch (IOException e) {
+				return false;
+			}
+			return tmp.renameTo(new File(getSavePath("txt")));
+		}
+		
+		EpubPacker epubPacker = new EpubPacker(path, filename, title, tmp, imgs);
+    	
+    	return epubPacker.pack();
 	}
 	
 }

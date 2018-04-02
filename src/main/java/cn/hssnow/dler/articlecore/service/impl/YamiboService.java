@@ -46,15 +46,15 @@ public class YamiboService extends BaseService {
 	protected void handlePageAndTitle(String content) {
 		Document html = Jsoup.parse(content);
 		Element page = html.selectFirst(".pg");
-		if (page == null) {
-			setPage(1);
-		} else {
+		if (page != null) {
 			String pageTitle = page.select("label span").attr("title");
-			setPage(Integer.parseInt(pageTitle.split(" ")[1]));
+			this.page = Integer.parseInt(pageTitle.split(" ")[1]);
+		} else {
+			this.page = 1;
 		}
 		Element title = html.selectFirst("#thread_subject");
 		if (title != null) {
-			setTitle(title.text());
+			this.title = title.text();
 		}
 	}
 
@@ -74,7 +74,10 @@ public class YamiboService extends BaseService {
 						continue;
 					}
 				}
-				getImgs().add(src);
+				if (!src.contains("http")) {
+					src = HOST + "/" + src;
+				}
+				imgs.add(src);
 			}
 			sb.append(CharCodeDecode.replace(element.html()
 					.replaceAll("<img.*?(src|file)=[\"'](.*?)[\"'].*?>", "$2")

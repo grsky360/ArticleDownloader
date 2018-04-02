@@ -20,8 +20,8 @@ public class CharCodeDecode {
 			put("&nbsp;", " ");
 			put("&quot;", "\"");
 			put("&amp;", "&");
-			put("&lt;", "<");
-			put("&gt;", ">");
+			// put("&lt;", "<");
+			// put("&gt;", ">");
 
 			put("<[^>]+>", "");
 			put("[ ]{4}", "");

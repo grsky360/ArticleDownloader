@@ -7,8 +7,10 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +47,7 @@ public class HttpClient {
 		return Singleton.OK_HTTP_CLIENT;
 	}
 	
-	public static String execute(String url, Map<String, String> header, Map<String, String> data, HttpMethod method) throws IOException {
+	public static ResponseBody execute(String url, Map<String, String> header, Map<String, String> data, HttpMethod method) throws IOException {
 		Request.Builder requestBuilder = new Request.Builder();
 		
 		StringBuilder cookieStr = new StringBuilder();
@@ -83,26 +85,37 @@ public class HttpClient {
 					COOKIE_STORE.put(request.url().host(), cookies);
 				}
 				
-				return response.body().string();
+				return response.body();
 			}
 		}
 		return null;
 	}
 	
-	public static String get(String url, Map<String, String> header) throws IOException {
-		return execute(url, header, Collections.emptyMap(), HttpMethod.GET);
+	public static InputStream download(String url) {
+		try {
+			ResponseBody responseBody = execute(url, Collections.emptyMap(), Collections.emptyMap(), HttpMethod.GET);
+			return responseBody != null ? responseBody.byteStream() : null;
+		} catch (IOException e) {
+			return null;
+		}
 	}
-	
+
 	public static String get(String url) throws IOException {
 		return get(url, Collections.emptyMap());
 	}
 	
-	public static String post(String url, Map<String, String> header, Map<String, String> data) throws IOException {
-		return execute(url, header, data, HttpMethod.POST); 
+	public static String get(String url, Map<String, String> header) throws IOException {
+		ResponseBody responseBody = execute(url, header, Collections.emptyMap(), HttpMethod.GET);
+		return responseBody != null ? responseBody.string() : null;
 	}
 	
 	public static String post(String url, Map<String, String> data) throws IOException {
 		return post(url, Collections.emptyMap(), data);
+	}
+	
+	public static String post(String url, Map<String, String> header, Map<String, String> data) throws IOException {
+		ResponseBody responseBody = execute(url, header, data, HttpMethod.POST);
+		return responseBody != null ? responseBody.string() : null;
 	}
 	
 }
