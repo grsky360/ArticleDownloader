@@ -76,11 +76,4 @@ public class ServiceFactoryImpl implements ServiceFactory<BaseService> {
 		return service;
 	}
 
-	public static void main(String[] args) {
-		SERVICES.forEach(c -> {
-			System.out.println(c.getName());
-		});
-	}
-
-
 }
