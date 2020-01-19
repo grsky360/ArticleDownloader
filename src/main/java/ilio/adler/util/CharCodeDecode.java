@@ -1,4 +1,4 @@
-package cn.hssnow.dler.articlecore.util;
+package ilio.adler.util;
 
 import java.util.HashMap;
 import java.util.Map;

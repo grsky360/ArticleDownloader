@@ -1,4 +1,4 @@
-package cn.hssnow.dler.articlecore.util;
+package ilio.adler.util;
 
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
@@ -26,7 +26,7 @@ public class EpubPacker {
 					.attr("content", "text/html; charset=utf-8"))
 			.appendChild(new Element("meta")
 					.attr("name", "provider")
-					.attr("content", "hssnow.cn"))
+					.attr("content", "ilio.tech"))
 			.appendChild(new Element("meta")
 					.attr("name", "builder")
 					.attr("content", "Hyia"))
@@ -34,60 +34,55 @@ public class EpubPacker {
 					.attr("name", "right")
 					.attr("content", "Provided by Hyia")
 			);
-	
-	
+
+
 	private static Element head(String title) {
 		return HEAD.clone().appendChild(new Element("title").text(title));
 	}
 	private String path;
 	private String filename;
 	private String title;
-	private Set<String> imgs;
+	private Set<String> images;
 
-	private File sourceFile;
-	
-	public EpubPacker(String path, String filename, String title, File sourceFile, List<String> imgs) {
+	private String[] lines;
+
+	public EpubPacker(String path, String filename, String title, String[] lines, List<String> images) {
 		this.path = path;
 		this.filename = filename;
 		this.title = title;
-		this.sourceFile = sourceFile;
-		
-		this.imgs = new HashSet<>(imgs);
-		System.out.println("Image number: " + this.imgs.size());
+		this.lines = lines;
+
+		this.images = new HashSet<>(images);
+		System.out.println("Image number: " + this.images.size());
 	}
-	
+
 	private Document split() {
-		try {
-			StringBuilder sb = new StringBuilder();
-			List<String> lines = Files.readAllLines(Paths.get(sourceFile.getAbsolutePath()), StandardCharsets.UTF_8);
-			for (String line : lines) {
-				sb.append("<p>").append(line).append("</p>");
-			}
-			String content = sb.toString();
-			for (String img : imgs) {
-				content = content.replaceAll(img, new Element("div")
-						.attr("style", "text-align:center")
-						.appendChild(new Element("img").attr("src", img.hashCode() + ".jpg").attr("alt", img)).outerHtml());
-			}
-			Document html = Jsoup.parse(new Element("html")
-					.appendChild(head(title))
-					.appendChild(Jsoup.parse(content).body())
-					.html());
-			html.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
-			html.selectFirst("html").attr("xmlns", "http://www.w3.org/1999/xhtml");
-			return html;
-		} catch (IOException e) {
-			return null;
+		StringBuilder sb = new StringBuilder();
+		for (String line : lines) {
+			sb.append("<p>").append(line).append("</p>");
 		}
+		String content = sb.toString();
+		for (String img : images) {
+			content = content.replaceAll(img, new Element("div")
+					.attr("style", "text-align:center")
+					.appendChild(new Element("img").attr("src", img.hashCode() + ".jpg").attr("alt", img)).outerHtml());
+		}
+		Document html = Jsoup.parse(new Element("html")
+				.appendChild(head(title))
+				.appendChild(Jsoup.parse(content).body())
+				.html());
+		html.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+		html.selectFirst("html").attr("xmlns", "http://www.w3.org/1999/xhtml");
+		return html;
 	}
-	
+
 	public boolean pack() {
 		Document html = split();
 		if (html == null) return false;
-		
+
 		Book book = new Book();
 		book.getMetadata().addTitle(title);
-		for (String img : imgs) {
+		for (String img : images) {
 			try {
 				InputStream imgBytes = HttpClient.download(img);
 				if (imgBytes != null) {
@@ -101,7 +96,7 @@ public class EpubPacker {
 			}
 		}
 		try {
-			book.addSection(title, new Resource(new ByteArrayInputStream(html.html().getBytes("UTF-8")), "content.html"));
+			book.addSection(title, new Resource(new ByteArrayInputStream(html.html().getBytes(StandardCharsets.UTF_8)), "content.html"));
 
 			EpubWriter writer = new EpubWriter();
 			writer.write(book, new FileOutputStream(path + File.separator + filename + ".epub"));
@@ -110,5 +105,5 @@ public class EpubPacker {
 		}
 		return true;
 	}
-	
+
 }

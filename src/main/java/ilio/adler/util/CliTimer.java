@@ -1,4 +1,4 @@
-package cn.hssnow.dler.articlecore.util;
+package ilio.adler.util;
 
 import java.text.DecimalFormat;
 import java.util.concurrent.ExecutionException;
@@ -15,9 +15,9 @@ public class CliTimer {
     private boolean endFlag = false;
     private boolean isError;
     private DecimalFormat format;
-    
+
     private long delay;
-    
+
     public CliTimer(String staticText, String endText, long delay, int decimal) {
         this.staticText = staticText;
         this.endText = endText;
